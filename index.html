@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#17212f">
+    <title>Quest Conquestus - Playtest</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand-block">
+        <span class="brand-mark" aria-hidden="true">QC</span>
+        <div>
+          <h1>Quest Conquestus</h1>
+          <p id="session-summary">Sessione pronta</p>
+        </div>
+      </div>
+
+      <nav class="top-actions" aria-label="Azioni sessione">
+        <button class="icon-button" id="new-session-button" type="button" title="Nuova sessione" aria-label="Nuova sessione">
+          <span aria-hidden="true">+</span>
+        </button>
+        <button class="icon-button" id="export-session-button" type="button" title="Esporta sessione JSON" aria-label="Esporta sessione JSON">
+          <span aria-hidden="true">⇩</span>
+        </button>
+        <button class="icon-button" id="import-session-button" type="button" title="Importa sessione JSON" aria-label="Importa sessione JSON">
+          <span aria-hidden="true">⇧</span>
+        </button>
+        <button class="icon-button" id="export-log-button" type="button" title="Esporta log e note" aria-label="Esporta log e note">
+          <span aria-hidden="true">≡</span>
+        </button>
+        <input id="import-session-input" class="visually-hidden" type="file" accept="application/json,.json">
+      </nav>
+    </header>
+
+    <main class="app-shell">
+      <aside class="panel setup-panel" aria-labelledby="setup-title">
+        <div class="panel-heading">
+          <h2 id="setup-title">Sessione</h2>
+          <span id="save-status" class="status-pill">salvata</span>
+        </div>
+
+        <form id="add-player-form" class="stacked-form">
+          <label for="player-name">Nome giocatore</label>
+          <input id="player-name" name="player-name" type="text" maxlength="28" autocomplete="off" placeholder="Es. Arianna">
+
+          <label for="class-select">Classe iniziale</label>
+          <select id="class-select" name="class-select"></select>
+
+          <button class="primary-button" type="submit">Aggiungi giocatore</button>
+        </form>
+
+        <section class="turn-box" aria-labelledby="turn-title">
+          <h3 id="turn-title">Turno</h3>
+          <select id="active-player-select" aria-label="Giocatore attivo"></select>
+          <div class="inline-actions">
+            <button id="previous-turn-button" type="button">Indietro</button>
+            <button id="next-turn-button" type="button">Avanti</button>
+          </div>
+        </section>
+
+        <div id="player-list" class="player-list" aria-live="polite"></div>
+      </aside>
+
+      <section class="panel map-panel" aria-labelledby="map-title">
+        <div class="panel-heading">
+          <h2 id="map-title">Mappa di test</h2>
+          <span id="active-player-label" class="status-pill">nessun giocatore</span>
+        </div>
+        <div id="map-board" class="map-board"></div>
+      </section>
+
+      <aside class="panel tools-panel" aria-labelledby="tools-title">
+        <div class="panel-heading">
+          <h2 id="tools-title">Strumenti</h2>
+          <span id="last-roll-label" class="status-pill">d10 -</span>
+        </div>
+
+        <section class="tool-block" aria-labelledby="dice-title">
+          <h3 id="dice-title">Dado e movimento</h3>
+          <div class="dice-display" id="dice-display">-</div>
+          <div class="tool-grid">
+            <button id="roll-d10-button" type="button">Lancia d10</button>
+            <button id="swim-button" type="button">Nuoto</button>
+            <button id="escape-button" type="button">Fuga</button>
+          </div>
+          <dl class="result-list">
+            <div>
+              <dt>Acqua</dt>
+              <dd id="swim-result">-</dd>
+            </div>
+            <div>
+              <dt>Complemento</dt>
+              <dd id="escape-result">-</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="tool-block" aria-labelledby="inventory-title">
+          <h3 id="inventory-title">Inventario</h3>
+          <form id="add-item-form" class="compact-form">
+            <label for="item-select">Oggetto</label>
+            <select id="item-select"></select>
+            <button type="submit">Aggiungi</button>
+          </form>
+        </section>
+
+        <section class="tool-block" aria-labelledby="effects-title">
+          <h3 id="effects-title">Effetti</h3>
+          <form id="add-effect-form" class="compact-form">
+            <label for="effect-select">Effetto</label>
+            <select id="effect-select"></select>
+            <label for="effect-turns">Turni</label>
+            <input id="effect-turns" type="number" min="0" max="20" value="2">
+            <button type="submit">Attiva</button>
+          </form>
+        </section>
+
+        <section class="tool-block" aria-labelledby="log-title">
+          <div class="section-heading-row">
+            <h3 id="log-title">Log</h3>
+            <button class="small-button" id="clear-log-button" type="button">Pulisci</button>
+          </div>
+          <form id="manual-log-form" class="compact-form">
+            <label for="manual-log-input">Evento</label>
+            <input id="manual-log-input" type="text" maxlength="180" placeholder="Combattimento, tesoro, nota rapida">
+            <button type="submit">Segna</button>
+          </form>
+          <ol id="event-log" class="event-log" aria-live="polite"></ol>
+        </section>
+      </aside>
+
+      <section class="panel notes-panel" aria-labelledby="notes-title">
+        <div class="panel-heading">
+          <h2 id="notes-title">Note playtest</h2>
+          <span class="status-pill">v1</span>
+        </div>
+        <textarea id="session-notes" rows="8" placeholder="Decisioni, dubbi sulle regole, tempi morti, momenti memorabili"></textarea>
+      </section>
+
+      <section class="panel rules-panel" aria-labelledby="rules-title">
+        <div class="panel-heading">
+          <h2 id="rules-title">Regole rapide</h2>
+          <span class="status-pill">manuale</span>
+        </div>
+        <div id="quick-rules" class="quick-rules"></div>
+      </section>
+    </main>
+  </body>
+</html>
+
