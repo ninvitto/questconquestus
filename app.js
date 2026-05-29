@@ -45,6 +45,9 @@
       "add-effect-form",
       "effect-select",
       "effect-turns",
+      "draw-card-form",
+      "deck-select",
+      "card-input",
       "manual-log-form",
       "manual-log-input",
       "event-log",
@@ -75,6 +78,7 @@
     dom.addItemForm.addEventListener("submit", handleAddItem);
     dom.addEffectForm.addEventListener("submit", handleAddEffect);
     dom.effectSelect.addEventListener("change", handleEffectSelectChange);
+    dom.drawCardForm.addEventListener("submit", handleDrawCard);
     dom.manualLogForm.addEventListener("submit", handleManualLog);
     dom.clearLogButton.addEventListener("click", clearLog);
     dom.sessionNotes.addEventListener("input", handleNotesInput);
@@ -93,6 +97,9 @@
     dom.itemSelect.innerHTML = groupedOptions(GAME_DATA.items, "type", (item) => `${item.name} - ${item.summary}`);
     dom.effectSelect.innerHTML = GAME_DATA.effects
       .map((effect) => `<option value="${escapeHtml(effect.id)}">${escapeHtml(effect.name)}</option>`)
+      .join("");
+    dom.deckSelect.innerHTML = GAME_DATA.decks
+      .map((deck) => `<option value="${escapeHtml(deck.id)}">${escapeHtml(deck.name)}</option>`)
       .join("");
   }
 
@@ -446,6 +453,26 @@
     if (effect) {
       dom.effectTurns.value = effect.turns;
     }
+  }
+
+  function handleDrawCard(event) {
+    event.preventDefault();
+    const deckId = dom.deckSelect.value;
+    const cardName = dom.cardInput.value.trim();
+    if (!cardName) return;
+    
+    const deck = GAME_DATA.decks.find((d) => d.id === deckId);
+    const deckName = deck ? deck.name : "Cassa";
+    const active = getActivePlayer();
+    
+    if (active) {
+      addLog(`${active.name} pesca: ${cardName} da ${deckName}.`, "draw");
+    } else {
+      addLog(`Pescata: ${cardName} da ${deckName}.`, "draw");
+    }
+    
+    dom.cardInput.value = "";
+    persistAndRender();
   }
 
   function handleManualLog(event) {

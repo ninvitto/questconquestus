@@ -224,6 +224,12 @@ const GAME_DATA = {
     { id: "combattimento", name: "In combattimento", turns: 0, detail: "Stato manuale per bloccare movimento o segnare scontri." },
     { id: "ferito", name: "Ferito", turns: 0, detail: "Segnalino libero per playtest." },
   ],
+  decks: [
+    { id: "cassa-comune", name: "Cassa Comune" },
+    { id: "cassa-rara", name: "Cassa Rara" },
+    { id: "cassa-boss", name: "Cassa Boss" },
+    { id: "mazzo-eventi", name: "Mazzo Eventi" },
+  ],
   quickRules: [
     {
       title: "Movimento",
